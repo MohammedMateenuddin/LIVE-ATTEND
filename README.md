@@ -1,119 +1,51 @@
-📍 Live Attend – Geo-Fenced Attendance System
+# 🎓 LIVE-ATTEND (High-Fidelity)
 
-A modern, real-time geo-fenced attendance web app where professors can start a session, and students can mark attendance only if they are physically within a 100-meter radius.
+A next-generation, high-fidelity spatial attendance system. This project modernizes the traditional roll-call process by combining real-time dynamic QR code scanning with precise GPS-based geolocation verification, entirely wrapped in a premium, 3D-accelerated user interface.
 
-This project solves the problem of proxy attendance and manual roll-call, using location-based verification and a clean, fast UI.
+## 🚀 Tech Stack
 
-🔗 Live Demo: https://attendance-system-ochre-ten.vercel.app/
+### Frontend (Client-Side)
+* **Next.js 16** (App Router) & **React 19**
+* **Tailwind CSS** for responsive, glass-morphism styling
+* **Framer Motion** for cinematic animations and transitions
+* **Spline 3D** (Isolated via shadow-DOM/iframe to bypass Next.js hydration issues)
+* **jsPDF & autoTable** for on-the-fly PDF report generation
 
-🛠 Built With: React + Vite, Tailwind CSS, Supabase, Lucide-React
+### Backend (Server-Side)
+* **Node.js & Express.js** (REST API)
+* **Prisma ORM** for type-safe database interactions
+* **MongoDB** (NoSQL Database)
+* **JSON Web Tokens (JWT)** for stateless, secure role-based authentication
 
-✨ Features
-👨‍🏫 For Professors
+## ✨ Key Features
 
-Start and stop attendance sessions
+### 👨‍🏫 For Professors (Command Center)
+* **3D Auth Portal**: Secure, dark-academic themed login.
+* **Dynamic QR Beacon**: Generates a self-refreshing (every 5 seconds) QR code that strictly expires to prevent students from sharing photos of the code to their friends.
+* **Geolocation Pinning**: Automatically locks the attendance session to the Professor's current GPS coordinates.
+* **Live Dashboard**: Watch the student count tick up in real-time as they scan in.
+* **1-Click Export**: Export the finalized attendance sheet as an Excel CSV or a formatted PDF Report.
 
-Real-time list of students who marked attendance
+### 👨‍🎓 For Students (Terminal)
+* **Secure Login**: Access the portal using individual credentials.
+* **Optical Scanner**: Built-in camera integration to scan the Professor's QR beacon.
+* **Spatial Verification**: The system checks the student's device GPS coordinates against the active session. If the student is outside the defined radius (e.g., 50 meters), attendance is denied.
+* **Historical Logs**: View a complete history of past verified classes.
 
-Secure teacher login with Supabase Auth
+## 🛠️ Local Development
 
-🎓 For Students
-
-Mark attendance only when within 100 meters
-
-Automatic location detection
-
-Smooth and minimal interface
-
-⚙️ System Capabilities
-
-Geo-location validation (Haversine formula)
-
-Supabase real-time database
-
-Modern, responsive UI
-
-Works on mobile and desktop
-
-Fully deployed on Vercel
-
-🧰 Tech Stack
-Layer	Technology
-Frontend	React + Vite
-Styling	Tailwind CSS
-Backend	Supabase (Auth, DB, Realtime)
-Icons	Lucide-React
-Geo-Location	Browser Geolocation API
-📁 Project Structure
-src/
-│── components/
-│── pages/
-│── hooks/
-│── utils/
-│── supabase/
-│── App.jsx
-│── main.jsx
-index.html
-
-🚀 Getting Started (Local Setup)
-1️⃣ Clone the repository
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
-
-2️⃣ Install dependencies
+### 1. Backend Setup
+```bash
+cd backend
 npm install
-
-3️⃣ Set up environment variables
-
-Create a .env file in the root:
-
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-4️⃣ Run the development server
+# Ensure your .env has DATABASE_URL (MongoDB) and JWT_SECRET
 npm run dev
+```
 
-📍 How Geo-Fence Validation Works
-
-User requests attendance marking
-
-Browser fetches current coordinates
-
-App calculates distance from teacher’s session location using the Haversine formula
-
-If within 100 meters, attendance is marked
-
-Supabase updates instantly in real-time ⚡
-
-📈 Future Enhancements
-
-Admin dashboard
-
-Attendance analytics & reports
-
-Role-based login (Admin / Faculty / Student)
-
-QR-code fallback system
-
-Notifications for session start
-
-Mobile app (React Native or Flutter)
-
-🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-Feel free to open an issue or submit a pull request.
-
-📜 License
-
-This project is licensed under the MIT License.
-
-🙌 Acknowledgments
-
-Special thanks to:
-
-Supabase for auth & realtime backend
-
-React + Vite ecosystem
-
-Tailwind CSS for fast UI styling
+### 2. Frontend Setup
+```bash
+# Open a new terminal in the project root
+npm install
+npm run dev
+```
+Navigate to `http://localhost:3000` to view the gateway.
