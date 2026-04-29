@@ -78,8 +78,8 @@ export default function StudentLoginPage() {
         />
       </video>
 
-      {/* LEFT SIDE - 3D ROBOT (DESKTOP) */}
-      <div className="hidden lg:flex w-[55%] relative z-10 flex-col items-center justify-center border-r border-white/5">
+      {/* LEFT SIDE - 3D ROBOT (DESKTOP & TABLET) */}
+      <div className="hidden md:flex w-[55%] relative z-10 flex-col items-center justify-center border-r border-white/5">
         <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent opacity-60 pointer-events-none" />
         
         {/* SOFT RADIAL GLOW BEHIND ROBOT */}
@@ -117,7 +117,7 @@ export default function StudentLoginPage() {
       </div>
 
       {/* RIGHT SIDE - LOGIN FORM */}
-      <div className="w-full lg:w-[45%] relative z-10 flex flex-col items-center justify-center px-6 md:px-12">
+      <div className="w-full md:w-[45%] relative z-10 flex flex-col items-center justify-center px-6 md:px-12">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
