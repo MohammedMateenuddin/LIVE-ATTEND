@@ -217,7 +217,7 @@ export default function ProfessorDashboard() {
                                 </div>
 
                                 {/* Radius Field */}
-                                <div className="space-y-2">
+                                <div className="space-y-2 md:col-span-2">
                                     <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.3em] ml-2 border-l-2 border-amber-500 pl-2 leading-none">Radius (M)</label>
                                     <div className="relative group/input">
                                         <FaBullseye className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-focus-within/input:text-purple-400 transition-colors text-[13px]" />
@@ -226,20 +226,6 @@ export default function ProfessorDashboard() {
                                             className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-black/75 border-2 border-white/40 focus:border-amber-500/60 focus:shadow-[0_0_20px_-5px_rgba(251,191,36,0.3)] transition-all outline-none font-black text-[15px] text-white shadow-lg"
                                             value={formData.radius}
                                             onChange={(e) => setFormData({ ...formData, radius: Number(e.target.value) })}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Time Field */}
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.3em] ml-2 border-l-2 border-cyan-500 pl-2 leading-none">Time (Min)</label>
-                                    <div className="relative group/input">
-                                        <FaHourglassHalf className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] group-focus-within/input:text-purple-400 transition-colors text-[13px]" />
-                                        <input
-                                            type="number"
-                                            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-black/75 border-2 border-white/40 focus:border-cyan-500/60 focus:shadow-[0_0_20px_-5px_rgba(34,211,238,0.3)] transition-all outline-none font-black text-[15px] text-white shadow-lg"
-                                            value={formData.durationMinutes}
-                                            onChange={(e) => setFormData({ ...formData, durationMinutes: Number(e.target.value) })}
                                         />
                                     </div>
                                 </div>

@@ -22,14 +22,14 @@ router.post('/create', authMiddleware, async (req, res) => {
     }
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + (durationMinutes || 1));
+    expiresAt.setMinutes(expiresAt.getMinutes() + (durationMinutes || 1440));
 
     const session = new Session({
       professorId: req.user.id,
       subjectName,
       courseCode,
       radius: radius || 50,
-      durationMinutes: durationMinutes || 1,
+      durationMinutes: durationMinutes || 1440,
       latitude,
       longitude,
       expiresAt,

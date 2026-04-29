@@ -63,20 +63,13 @@ export default function SessionQRPage() {
   }, [sessionId]);
 
   useEffect(() => {
-    const tick = () => {
-      setToken(generateToken());
-      setCountdown(5);
-    };
-    tick();
-    const id = setInterval(tick, 5000);
-    return () => clearInterval(id);
+    // Single static token generation per session
+    setToken(generateToken());
   }, [sessionId]);
 
+  // Timer removed per user request for static QR workflow
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev <= 0.05 ? 5 : prev - 0.05));
-    }, 50);
-    return () => clearInterval(timer);
+    setCountdown(0);
   }, [token]);
 
   const attendanceUrl = typeof window !== 'undefined' 
@@ -273,7 +266,7 @@ export default function SessionQRPage() {
                                 <motion.div key={token} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
                                     <QRCodeCanvas 
                                         value={attendanceUrl} 
-                                        size={140} 
+                                        size={260} 
                                         level="H" 
                                         bgColor="#FFFFFF" 
                                         fgColor="#000000" 
@@ -281,8 +274,8 @@ export default function SessionQRPage() {
                                             src: "/hkbk-logo.png",
                                             x: undefined,
                                             y: undefined,
-                                            height: 35,
-                                            width: 35,
+                                            height: 60,
+                                            width: 60,
                                             excavate: true,
                                         }}
                                     />
@@ -290,16 +283,7 @@ export default function SessionQRPage() {
                             </AnimatePresence>
                         </div>
 
-                        <div className="mt-3 flex flex-col items-center">
-                            <div className="relative w-9 h-9">
-                                <svg key={token} className="w-full h-full -rotate-90">
-                                    <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.05)" strokeWidth="3" fill="transparent" />
-                                    <motion.circle cx="18" cy="18" r="16" stroke="#a855f7" strokeWidth="3" fill="transparent" strokeDasharray="100.53" initial={{ strokeDashoffset: 0 }} animate={{ strokeDashoffset: 100.53 }} transition={{ duration: 5, ease: "linear" }} />
-                                </svg>
-                                <div className="absolute inset-0 flex items-center justify-center"><span className="text-[10px] font-black text-purple-400 tabular-nums">{Math.ceil(countdown)}</span></div>
-                            </div>
-                            <p className="mt-1 text-[8px] text-white/40 uppercase tracking-[0.3em] font-black">Refresh</p>
-                        </div>
+
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2.5">
@@ -315,8 +299,8 @@ export default function SessionQRPage() {
                         <button onClick={copyLink} className="flex items-center justify-center gap-2 bg-black/40 hover:bg-black/60 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border border-white/10 group/btn">
                             <FaCopy className="text-white/40 text-[10px]" /> COPY LINK
                         </button>
-                        <button onClick={endSession} className="col-span-2 flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all border border-red-500/30 text-red-400">
-                            <FaTimesCircle className="text-base" /> TERMINATE SESSION
+                        <button onClick={endSession} className="col-span-2 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all border border-red-400/50 shadow-[0_0_20px_rgba(220,38,38,0.3)] text-white">
+                            <FaTimesCircle className="text-lg" /> TERMINATE SESSION
                         </button>
                     </div>
                 </div>

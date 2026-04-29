@@ -15,12 +15,10 @@ router.post('/mark', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Missing session ID or token' });
     }
 
-    // 1. Validate token age (< 6s)
+    // 1. Validate token (Removed age check per user request for static QR)
     const tokenTimestamp = parseInt(token.split('-')[0]);
-    const age = Date.now() - tokenTimestamp;
-    
-    if (isNaN(tokenTimestamp) || age > 6000) {
-      return res.status(410).json({ message: 'QR Expired — ask your professor to refresh the code' });
+    if (isNaN(tokenTimestamp)) {
+      return res.status(400).json({ message: 'Invalid QR token' });
     }
 
     // 2. Find and validate session
