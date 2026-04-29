@@ -36,10 +36,10 @@ export default function StudentDashboard() {
     try {
       setLoadingData(true);
       const [statsRes, historyRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/`}/api/attendance/student/stats`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/stats`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/`}/api/attendance/student/history?limit=5`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/history?limit=5`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         })
       ]);
@@ -72,7 +72,7 @@ export default function StudentDashboard() {
         return;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/`}/api/attendance/mark`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/mark`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

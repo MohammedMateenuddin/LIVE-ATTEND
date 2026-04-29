@@ -33,7 +33,7 @@ export default function ProfessorHistory() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/`}/api/sessions/professor/history`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/sessions/professor/history`, {
         headers: { 'Authorization': `Bearer ${professorToken}` }
       });
       if (res.ok) {
