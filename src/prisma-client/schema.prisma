@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/prisma-client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = "mongodb+srv://admin:password%40123@ac-1tqi3zs.y7pwtfg.mongodb.net/attendance?retryWrites=true&w=majority"
+}
+
+model Session {
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  professorName String
+  courseCode    String
+  createdAt     DateTime           @default(now())
+  isActive      Boolean            @default(true)
+  expiresAt     DateTime?
+  latitude      Float
+  longitude     Float
+  radius        Float              @default(50) // in meters
+  attendees     AttendanceRecord[]
+}
+
+model AttendanceRecord {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId         String   @db.ObjectId
+  session           Session  @relation(fields: [sessionId], references: [id])
+  studentName       String
+  rollNumber        String
+  timestamp         DateTime @default(now())
+  latitude          Float?
+  longitude         Float?
+  deviceFingerprint String?
+
+  @@unique([sessionId, rollNumber])
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spline Robot</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+      This is loaded inside an iframe to completely isolate the Spline WebGL engine 
+      from Next.js 16/React 19 devtools. This prevents any internal engine "Missing property" 
+      errors from triggering the Next.js Error Overlay.
+    -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    <spline-viewer url="https://prod.spline.design/y1AAiIZqwQofQ3rh/scene.splinecode"></spline-viewer>
+    <script>
+        // The Spline engine aggressively protects its logo. 
+        // Instead of deleting the DOM node (which it might recreate), 
+        // we inject a permanent, immutable CSS cloak into the Shadow DOM.
+        const cloakWatermark = () => {
+            const viewer = document.querySelector('spline-viewer');
+            if (viewer && viewer.shadowRoot) {
+                // Check if we've already injected the cloak
+                if (!viewer.shadowRoot.querySelector('#anti-watermark')) {
+                    const style = document.createElement('style');
+                    style.id = 'anti-watermark';
+                    style.textContent = `
+                        #logo, a[href*="spline.design"] {
+                            opacity: 0 !important;
+                            visibility: hidden !important;
+                            transform: scale(0.0001) !important;
+                            pointer-events: none !important;
+                            z-index: -9999 !important;
+                            display: none !important;
+                            width: 0 !important;
+                            height: 0 !important;
+                        }
+                    `;
+                    viewer.shadowRoot.appendChild(style);
+                }
+            }
+            // Keep checking aggressively during engine spin-up
+            requestAnimationFrame(cloakWatermark);
+        };
+        requestAnimationFrame(cloakWatermark);
+    </script>
+</body>
+</html>
