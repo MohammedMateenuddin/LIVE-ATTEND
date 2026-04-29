@@ -25,38 +25,30 @@
       from Next.js 16/React 19 devtools. This prevents any internal engine "Missing property" 
       errors from triggering the Next.js Error Overlay.
     -->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.59/build/spline-viewer.js"></script>
     <spline-viewer url="https://prod.spline.design/y1AAiIZqwQofQ3rh/scene.splinecode"></spline-viewer>
     <script>
-        // The Spline engine aggressively protects its logo. 
-        // Instead of deleting the DOM node (which it might recreate), 
-        // we inject a permanent, immutable CSS cloak into the Shadow DOM.
         const cloakWatermark = () => {
             const viewer = document.querySelector('spline-viewer');
             if (viewer && viewer.shadowRoot) {
-                // Check if we've already injected the cloak
-                if (!viewer.shadowRoot.querySelector('#anti-watermark')) {
+                const styleId = 'anti-watermark-css';
+                if (!viewer.shadowRoot.getElementById(styleId)) {
                     const style = document.createElement('style');
-                    style.id = 'anti-watermark';
+                    style.id = styleId;
                     style.textContent = `
-                        #logo, a[href*="spline.design"] {
+                        #logo, a[href*="spline.design"], .spline-watermark {
+                            display: none !important;
                             opacity: 0 !important;
                             visibility: hidden !important;
-                            transform: scale(0.0001) !important;
                             pointer-events: none !important;
-                            z-index: -9999 !important;
-                            display: none !important;
-                            width: 0 !important;
-                            height: 0 !important;
                         }
                     `;
                     viewer.shadowRoot.appendChild(style);
                 }
             }
-            // Keep checking aggressively during engine spin-up
-            requestAnimationFrame(cloakWatermark);
         };
-        requestAnimationFrame(cloakWatermark);
+        // Run every 500ms instead of every frame to save CPU
+        setInterval(cloakWatermark, 500);
     </script>
 </body>
 </html>

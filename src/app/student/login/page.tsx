@@ -111,6 +111,7 @@ export default function StudentLoginPage() {
             height="100%" 
             className="w-full h-full pointer-events-none"
             title="Spline 3D Robot"
+            allow="accelerometer; gyroscope; vision; xr-spatial-tracking"
           ></iframe>
         </div>
       </div>
