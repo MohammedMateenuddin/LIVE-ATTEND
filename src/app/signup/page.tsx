@@ -13,7 +13,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { loginProfessor, user } = useAuth();
   const router = useRouter();
 
   // Auto-redirect if already logged in
@@ -33,7 +33,7 @@ export default function SignupPage() {
     const trimmedPassword = password.trim();
 
     try {
-      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/auth/signup', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email: trimmedEmail, password: trimmedPassword }),
@@ -43,7 +43,7 @@ export default function SignupPage() {
 
       if (res.ok) {
         toast.success('Account created successfully!');
-        login(data.token, data.professor);
+        loginProfessor(data.token, data.professor);
       } else {
         setError(data.message || 'Signup failed');
         toast.error(data.message || 'Signup failed');

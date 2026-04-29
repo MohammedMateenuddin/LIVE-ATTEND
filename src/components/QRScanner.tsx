@@ -75,7 +75,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
       if (controlsRef.current) controlsRef.current.stop();
 
       // Mark attendance
-      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/attendance/mark', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/`}/api/attendance/mark`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

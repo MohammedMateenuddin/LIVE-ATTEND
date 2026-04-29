@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, user, loading: authLoading } = useAuth();
+  const { loginProfessor, user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   // Auto-redirect if already logged in
@@ -32,7 +32,7 @@ export default function LoginPage() {
     const trimmedPassword = password.trim();
 
     try {
-      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/auth/login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: trimmedEmail, password: trimmedPassword }),
@@ -42,7 +42,7 @@ export default function LoginPage() {
 
       if (res.ok) {
         toast.success('Login successful!');
-        login(data.token, data.professor);
+        loginProfessor(data.token, data.professor);
       } else {
         setError(data.message || 'Login failed');
         toast.error(data.message || 'Login failed');

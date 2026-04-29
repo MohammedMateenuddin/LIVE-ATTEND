@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
         const session = await prisma.session.create({
             data: {
-                professorName,
+                subjectName: professorName || "General",
                 courseCode,
                 latitude,
                 longitude,
