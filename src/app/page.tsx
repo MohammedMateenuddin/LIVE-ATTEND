@@ -5,7 +5,7 @@ import { FaChalkboardTeacher, FaUserGraduate } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 export default function Home() {
-  const containerVariants = {
+  const containerVariants: any = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -16,7 +16,7 @@ export default function Home() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: any = {
     hidden: { y: 15, opacity: 0 },
     visible: {
       y: 0,

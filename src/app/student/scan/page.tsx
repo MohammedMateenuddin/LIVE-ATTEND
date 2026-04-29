@@ -6,10 +6,12 @@ import { useAuth } from '@/context/AuthContext';
 import { FaSyncAlt, FaCamera } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
-export default function StudentScanRedirect() {
+import { Suspense } from 'react';
+
+function StudentScanRedirectContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { studentToken, authLoading } = useAuth();
+  const { studentToken, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,8 +38,6 @@ export default function StudentScanRedirect() {
     }
 
     // If logged in, go to dashboard and trigger scanner with these params
-    // Actually, it's better to just go to dashboard and let the user click scan
-    // OR we can mark it directly here since we have everything
     if (sessionId && token) {
       markDirectly(sessionId, token);
     } else {
@@ -82,5 +82,17 @@ export default function StudentScanRedirect() {
       <h1 className="text-xl font-black tracking-tighter uppercase mb-2">Processing Scan</h1>
       <p className="text-white/40 text-xs font-bold tracking-widest uppercase">Verifying spatial security token...</p>
     </div>
+  );
+}
+
+export default function StudentScanRedirect() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <StudentScanRedirectContent />
+    </Suspense>
   );
 }
