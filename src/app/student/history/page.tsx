@@ -35,10 +35,10 @@ export default function StudentHistory() {
     try {
       setLoading(true);
       const [historyRes, statsRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/attendance/student/history`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/attendance/student/history`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         }),
-        fetch(`http://localhost:5000/api/attendance/student/stats`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/attendance/student/stats`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         })
       ]);

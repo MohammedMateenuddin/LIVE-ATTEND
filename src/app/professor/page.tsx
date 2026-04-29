@@ -57,7 +57,7 @@ export default function ProfessorDashboard() {
                 const { latitude, longitude } = position.coords;
                 
                 try {
-                    const res = await fetch('http://localhost:5000/api/sessions/create', {
+                    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/sessions/create', {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',

@@ -29,7 +29,7 @@ export default function ProfessorRegisterPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/professor/register', {
+      const res = await fetch('${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/auth/professor/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email: email.trim(), password: password.trim() }),

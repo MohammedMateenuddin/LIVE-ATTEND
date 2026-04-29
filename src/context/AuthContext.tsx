@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchProfile = async (token: string, role: 'professor' | 'student') => {
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/${role}/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`}/api/auth/${role}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
