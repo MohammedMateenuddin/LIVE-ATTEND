@@ -48,33 +48,30 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Location data is required' }, { status: 400 });
         }
 
-        // 3. Check for duplicate attendance
-        const existingRecord = await prisma.attendanceRecord.findUnique({
-            where: {
-                sessionId_rollNumber: {
-                    sessionId,
-                    rollNumber,
-                },
-            },
-        });
-
-        if (existingRecord) {
+        // 3. Check for duplicate attendance (inside the embedded array)
+        const alreadyMarked = session.attendees.some((a: any) => a.rollNumber === rollNumber);
+        if (alreadyMarked) {
             return NextResponse.json({ error: 'Attendance already marked for this roll number' }, { status: 400 });
         }
 
-        // 4. Create Record
-        const record = await prisma.attendanceRecord.create({
+        // 4. Update Session document by pushing to attendees array
+        const updatedSession = await prisma.session.update({
+            where: { id: sessionId },
             data: {
-                sessionId,
-                studentName,
-                rollNumber,
-                latitude,
-                longitude,
-                deviceFingerprint,
-            },
+                attendees: {
+                    push: {
+                        studentName,
+                        rollNumber,
+                        latitude,
+                        longitude,
+                        deviceFingerprint,
+                        timestamp: new Date()
+                    }
+                }
+            }
         });
 
-        return NextResponse.json(record);
+        return NextResponse.json({ success: true, message: 'Attendance marked' });
     } catch (error) {
         console.error('Error marking attendance:', error);
         return NextResponse.json({ error: 'Failed to mark attendance' }, { status: 500 });

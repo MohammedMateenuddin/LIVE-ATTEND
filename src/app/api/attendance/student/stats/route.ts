@@ -10,8 +10,12 @@ export async function GET(request: Request) {
             return NextResponse.json({ percentage: 0, attended: 0, total: 0 });
         }
 
-        const attended = await prisma.attendanceRecord.count({
-            where: { rollNumber }
+        const attended = await prisma.session.count({
+            where: {
+                attendees: {
+                    some: { rollNumber }
+                }
+            }
         });
 
         const totalSessions = await prisma.session.count();

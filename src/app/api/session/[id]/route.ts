@@ -6,11 +6,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         const { id } = await params;
         const session = await prisma.session.findUnique({
             where: { id },
-            include: {
-                attendees: {
-                    orderBy: { timestamp: 'desc' },
-                },
-            },
         });
 
         if (!session) {

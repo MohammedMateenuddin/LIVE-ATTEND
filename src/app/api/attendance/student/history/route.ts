@@ -11,23 +11,27 @@ export async function GET(request: Request) {
             return NextResponse.json([]);
         }
 
-        const history = await prisma.attendanceRecord.findMany({
-            where: { rollNumber },
-            include: {
-                session: true
+        const sessions = await prisma.session.findMany({
+            where: {
+                attendees: {
+                    some: { rollNumber }
+                }
             },
             orderBy: {
-                timestamp: 'desc'
+                createdAt: 'desc'
             }
         });
 
-        const formattedHistory = history.map(h => ({
-            courseCode: h.session.courseCode,
-            sessionId: h.sessionId,
-            date: h.session.createdAt,
-            markedAt: h.timestamp,
-            status: 'Present'
-        }));
+        const formattedHistory = sessions.map(s => {
+            const record = s.attendees.find(a => a.rollNumber === rollNumber);
+            return {
+                courseCode: s.courseCode,
+                sessionId: s.id,
+                date: s.createdAt,
+                markedAt: record?.timestamp || s.createdAt,
+                status: 'Present'
+            };
+        });
 
         return NextResponse.json(formattedHistory);
     } catch (error) {

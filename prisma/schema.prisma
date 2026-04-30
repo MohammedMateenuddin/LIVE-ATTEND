@@ -16,20 +16,18 @@ model Session {
   expiresAt     DateTime?
   latitude      Float
   longitude     Float
-  radius        Float    @default(50) // in meters
-  attendees     AttendanceRecord[]
+  radius        Float    @default(50)
+  attendees     Attendee[]
+
+  @@map("sessions")
 }
 
-model AttendanceRecord {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  sessionId   String   @db.ObjectId
-  session     Session  @relation(fields: [sessionId], references: [id])
+type Attendee {
   studentName String
   rollNumber  String
   timestamp   DateTime @default(now())
   latitude    Float?
   longitude   Float?
   deviceFingerprint String?
-  
-  @@unique([sessionId, rollNumber])
 }
+
