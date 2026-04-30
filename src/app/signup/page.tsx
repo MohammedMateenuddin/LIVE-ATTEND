@@ -33,7 +33,7 @@ export default function SignupPage() {
     const trimmedPassword = password.trim();
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/signup`, {
+      const res = await fetch(`/api/auth/professor/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email: trimmedEmail, password: trimmedPassword }),

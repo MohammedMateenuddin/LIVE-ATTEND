@@ -39,6 +39,12 @@ export default function ProfessorHistory() {
       if (res.ok) {
         const data = await res.json();
         setSessions(data);
+        if (data.length > 0) {
+          toast.success(`${data.length} sessions loaded`);
+        }
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        toast.error(errorData.error || errorData.message || 'Server Error');
       }
     } catch (err) {
       toast.error('Failed to load history');
@@ -68,7 +74,7 @@ export default function ProfessorHistory() {
       doc.setTextColor(100, 100, 100);
       doc.text(`COURSE: ${session.courseCode}`, 14, 28);
       doc.text(`SUBJECT: ${session.subjectName || 'N/A'}`, 14, 33);
-      doc.text(`SESSION ID: ${session._id}`, 14, 38);
+      doc.text(`SESSION ID: ${session.id}`, 14, 38);
       doc.text(`SESSION DATE: ${date}`, 14, 43);
       
       doc.setDrawColor(168, 85, 247);
@@ -145,11 +151,14 @@ export default function ProfessorHistory() {
     }
   };
 
-  const filteredSessions = sessions.filter(s => 
-    s.courseCode.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (s.subjectName && s.subjectName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    s._id.includes(searchTerm)
-  );
+  const filteredSessions = sessions.filter(s => {
+    const code = s.courseCode?.toLowerCase() || '';
+    const subject = s.subjectName?.toLowerCase() || '';
+    const search = searchTerm.toLowerCase();
+    const id = s.id || '';
+    
+    return code.includes(search) || subject.includes(search) || id.includes(search);
+  });
 
   const getStatusBadge = (session: any) => {
     const now = new Date();
@@ -182,7 +191,7 @@ export default function ProfessorHistory() {
               <FaArrowLeft /> Back to Dashboard
             </Link>
             <div className="flex items-center gap-4">
-              <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+              <img src="/hkbk-logo.png" alt="Logo" className="w-10 h-10 rounded-full aspect-square object-cover border border-white/20" />
               <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                 Session History
               </h1>
@@ -216,7 +225,7 @@ export default function ProfessorHistory() {
               const attendanceRate = Math.min(Math.round((present / 50) * 100), 100); // 50 as default max for visual
 
               return (
-                <motion.div key={session._id} whileHover={{ y: -5 }} className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-7 rounded-[2rem] flex flex-col justify-between group shadow-2xl">
+                <motion.div key={session.id} whileHover={{ y: -5 }} className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-7 rounded-[2rem] flex flex-col justify-between group shadow-2xl">
                   <div>
                     <div className="flex justify-between items-start mb-6">
                       <div>

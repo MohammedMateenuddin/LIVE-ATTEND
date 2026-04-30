@@ -50,7 +50,7 @@ export default function Home() {
         {/* Hero Title Section - MASSIVE */}
         <motion.div variants={itemVariants} className="text-center mb-4 relative w-full flex flex-col items-center">
           <div className="flex items-center justify-center gap-4 md:gap-6 mb-2">
-            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-16 md:w-28 h-auto drop-shadow-2xl animate-pulse" />
+            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-16 md:w-28 aspect-square object-cover rounded-full border-2 border-white/20 drop-shadow-2xl" />
             <h1 className="text-[12vw] md:text-[10rem] font-black tracking-[-0.05em] leading-[0.8] text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               Live Attend
             </h1>

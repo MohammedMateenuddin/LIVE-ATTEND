@@ -5,7 +5,7 @@ import { createObjectCsvStringifier } from 'csv-writer';
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        const session = await prisma.session.findUnique({
+        const session = await (prisma.session as any).findUnique({
             where: { id },
         });
 
@@ -23,9 +23,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             ],
         });
 
-        const records = session.attendees.map(record => ({
+        const records = ((session as any).attendees || []).map((record: any) => ({
             ...record,
-            timestamp: record.timestamp.toISOString(),
+            timestamp: new Date(record.timestamp).toISOString(),
         }));
 
         const header = csvStringifier.getHeaderString();
@@ -33,8 +33,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         // Add BOM for Excel compatibility
         const csvContent = '\uFEFF' + header + recordsString;
 
-        const filename = `attendance-${session.courseCode}-${session.createdAt.toISOString().split('T')[0]}.csv`;
-        console.log('Exporting file:', filename);
+        const courseCode = (session as any).courseCode || 'session';
+        const dateStr = (session as any).createdAt ? new Date((session as any).createdAt).toISOString().split('T')[0] : 'date';
+        const filename = `attendance-${courseCode}-${dateStr}.csv`;
 
         const response = new NextResponse(csvContent, {
             headers: {

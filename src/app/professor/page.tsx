@@ -17,7 +17,7 @@ export default function ProfessorDashboard() {
         subjectName: '',
         courseCode: '',
         radius: 50,
-        durationMinutes: 1,
+        durationMinutes: 60,
     });
 
     useEffect(() => {
@@ -76,8 +76,9 @@ export default function ProfessorDashboard() {
                         toast.success('Session started!');
                         router.push(`/professor/session/${data.id || data._id}`);
                     } else {
-                        setError(data.message || 'Failed to create session');
-                        toast.error(data.message || 'Failed to create session');
+                        const errorMsg = data.details || data.message || 'Failed to create session';
+                        setError(errorMsg);
+                        toast.error(errorMsg);
                     }
                 } catch (err) {
                     setError('Connection error. Please try again.');
@@ -121,7 +122,7 @@ export default function ProfessorDashboard() {
                         className="flex flex-col items-center md:items-start"
                     >
                         <div className="flex items-center gap-4">
-                            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+                            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-10 h-10 rounded-full aspect-square object-cover border border-white/20" />
                             <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">
                                 Dashboard
                             </h1>
@@ -217,21 +218,35 @@ export default function ProfessorDashboard() {
                                             />
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Radius Field */}
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.3em] ml-2 border-l-2 border-amber-500 pl-2 leading-none">Radius (M)</label>
-                                    <div className="relative group/input">
-                                        <FaBullseye className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-focus-within/input:text-purple-400 transition-colors text-[13px]" />
-                                        <input
-                                            type="number"
-                                            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-black/75 border-2 border-white/40 focus:border-amber-500/60 focus:shadow-[0_0_20px_-5px_rgba(251,191,36,0.3)] transition-all outline-none font-black text-[15px] text-white shadow-lg"
-                                            value={formData.radius}
-                                            onChange={(e) => setFormData({ ...formData, radius: Number(e.target.value) })}
-                                        />
-                                    </div>
-                                </div>
+
+                                 {/* Radius Field */}
+                                 <div className="space-y-2">
+                                     <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.3em] ml-2 border-l-2 border-amber-500 pl-2 leading-none">Radius (M)</label>
+                                     <div className="relative group/input">
+                                         <FaBullseye className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] group-focus-within/input:text-purple-400 transition-colors text-[13px]" />
+                                         <input
+                                             type="number"
+                                             className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-black/75 border-2 border-white/40 focus:border-amber-500/60 focus:shadow-[0_0_20px_-5px_rgba(251,191,36,0.3)] transition-all outline-none font-black text-[15px] text-white shadow-lg"
+                                             value={formData.radius}
+                                             onChange={(e) => setFormData({ ...formData, radius: Number(e.target.value) })}
+                                         />
+                                     </div>
+                                 </div>
+
+                                 {/* Duration Field */}
+                                 <div className="space-y-2">
+                                     <label className="text-[10px] font-black text-white/70 uppercase tracking-[0.3em] ml-2 border-l-2 border-blue-500 pl-2 leading-none">Duration (Min)</label>
+                                     <div className="relative group/input">
+                                         <FaHourglassHalf className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)] group-focus-within/input:text-purple-400 transition-colors text-[13px]" />
+                                         <input
+                                             type="number"
+                                             className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-black/75 border-2 border-white/40 focus:border-blue-500/60 focus:shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)] transition-all outline-none font-black text-[15px] text-white shadow-lg"
+                                             value={formData.durationMinutes}
+                                             onChange={(e) => setFormData({ ...formData, durationMinutes: Number(e.target.value) })}
+                                         />
+                                     </div>
+                                 </div>
 
                                 <motion.button
                                     whileHover={{ scale: 1.01 }}
@@ -252,12 +267,13 @@ export default function ProfessorDashboard() {
                             </div>
                         </div>
                     </div>
-                </motion.div>
-            </div>
+                </div>
+            </motion.div>
 
             {/* Status Details */}
             <div className="fixed bottom-6 right-6 flex items-center gap-2 text-[7px] font-black text-white/10 uppercase tracking-[1em] pointer-events-none select-none z-50">
                 Live Attend Terminal v1.0.4
+            </div>
             </div>
         </main>
     );

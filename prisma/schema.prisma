@@ -9,8 +9,9 @@ datasource db {
 
 model Session {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  subjectName   String
-  courseCode    String
+  subjectName   String?
+  courseCode    String?
+  professorId   String?  @db.ObjectId
   createdAt     DateTime @default(now())
   isActive      Boolean  @default(true)
   expiresAt     DateTime?
@@ -20,6 +21,27 @@ model Session {
   attendees     Attendee[]
 
   @@map("sessions")
+}
+
+model Professor {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  @@map("professors")
+}
+
+model Student {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String   @unique
+  rollNumber  String   @unique
+  password    String
+  createdAt   DateTime @default(now())
+
+  @@map("students")
 }
 
 type Attendee {

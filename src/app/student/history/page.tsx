@@ -9,7 +9,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function StudentHistory() {
-  const { studentToken, loading: authLoading } = useAuth();
+  const { user, studentToken, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
@@ -75,7 +75,7 @@ export default function StudentHistory() {
               <FaArrowLeft /> Back to Dashboard
             </Link>
             <div className="flex items-center gap-4">
-              <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+              <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 rounded-full aspect-square object-cover border border-white/20" />
               <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500">
                 Attendance Archive
               </h1>

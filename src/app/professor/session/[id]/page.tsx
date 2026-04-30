@@ -230,7 +230,7 @@ export default function SessionQRPage() {
         <div className="flex justify-between items-center px-2">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col">
                 <div className="flex items-center gap-3">
-                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-8 h-8 object-contain" />
+                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-8 h-8 rounded-full aspect-square object-cover border border-white/20" />
                     <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-none">Terminal</h1>
                 </div>
                 <div className="flex items-center gap-1 mt-0.5">

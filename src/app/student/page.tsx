@@ -2,6 +2,7 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FaUserGraduate, FaCalendarCheck, FaMapMarkerAlt, FaSignOutAlt, FaHistory, FaCheckCircle, FaSearch, FaClock } from 'react-icons/fa';
 import toast from 'react-hot-toast';
@@ -64,38 +65,59 @@ export default function StudentDashboard() {
         return;
       }
 
-      // Validate token age (< 6s)
+      // Validate token age (< 60s) - Increased from 6s for better UX
       const tokenTimestamp = parseInt(token.split('-')[0]);
       const age = Date.now() - tokenTimestamp;
-      if (isNaN(tokenTimestamp) || age > 6000) {
+      if (isNaN(tokenTimestamp) || age > 60000) {
         toast.error('QR code expired — ask professor to refresh');
         return;
       }
 
-      const res = await fetch(`/api/attendance`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${studentToken}`
-        },
-        body: JSON.stringify({ sessionId, token, studentName: user?.name, rollNumber: user?.rollNumber })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setShowScanner(false);
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#06b6d4', '#10b981', '#ffffff']
-        });
-        toast.success("You're marked Present!", { duration: 5000 });
-        fetchDashboardData();
-      } else {
-        toast.error(data.message || 'Verification failed');
+      if (!navigator.geolocation) {
+        toast.error('Location access required');
+        return;
       }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(`/api/attendance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${studentToken}`
+            },
+            body: JSON.stringify({ 
+              sessionId, 
+              token, 
+              studentName: user?.name, 
+              rollNumber: user?.rollNumber,
+              latitude,
+              longitude
+            })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            setShowScanner(false);
+            confetti({
+              particleCount: 150,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#06b6d4', '#10b981', '#ffffff']
+            });
+            toast.success("You're marked Present!", { duration: 5000 });
+            fetchDashboardData();
+          } else {
+            toast.error(data.error || data.message || 'Verification failed');
+          }
+        } catch (err) {
+          toast.error('Connection error');
+        }
+      }, (err) => {
+        toast.error('Location access denied. Cannot mark attendance.');
+      });
     } catch (err) {
       toast.error('Scan processing error');
     }
@@ -137,7 +159,7 @@ export default function StudentDashboard() {
                 className="flex flex-col items-center md:items-start"
             >
                 <div className="flex items-center gap-4">
-                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 rounded-full aspect-square object-cover border border-white/20 shadow-lg shadow-cyan-500/20" />
                     <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">
                         Student Dashboard
                     </h1>
@@ -307,7 +329,4 @@ export default function StudentDashboard() {
   );
 }
 
-// Simple Link wrapper for the history link since I can't import Link easily inside the snippet without checking imports
-function Link({ href, children, className }: { href: string, children: React.ReactNode, className: string }) {
-    return <a href={href} className={className}>{children}</a>;
-}
+

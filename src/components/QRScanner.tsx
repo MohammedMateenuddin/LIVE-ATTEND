@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 import { FaTimes, FaCamera, FaCheckCircle, FaExclamationTriangle, FaSyncAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
 import confetti from 'canvas-confetti';
 import toast from 'react-hot-toast';
 
@@ -18,6 +19,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
   const [status, setStatus] = useState<'scanning' | 'success' | 'error'>('scanning');
   const [errorMessage, setErrorMessage] = useState('');
   const [scanResult, setScanResult] = useState<any>(null);
+  const { user, studentToken } = useAuth();
 
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader();
@@ -62,10 +64,10 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
         throw new Error('Invalid QR Code format');
       }
 
-      // Validate token age (< 6s)
+      // Validate token age (< 60s)
       const tokenTimestamp = parseInt(token.split('-')[0]);
       const age = Date.now() - tokenTimestamp;
-      if (isNaN(tokenTimestamp) || age > 6000) {
+      if (isNaN(tokenTimestamp) || age > 60000) {
         setErrorMessage('QR code expired — ask professor to refresh');
         setStatus('error');
         return;
@@ -74,31 +76,55 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
       // Stop scanner immediately
       if (controlsRef.current) controlsRef.current.stop();
 
-      // Mark attendance
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/mark`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('student_token')}`
-        },
-        body: JSON.stringify({ sessionId, token })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setScanResult({
-          courseCode: data.courseCode || 'Verified',
-          timestamp: new Date().toLocaleTimeString()
-        });
-        setStatus('success');
-        triggerConfetti();
-        // Call parent onScan to refresh dashboard data
-        onScan(scannedUrl);
-      } else {
-        setErrorMessage(data.message || 'Could not mark attendance');
+      // Check for geolocation
+      if (!navigator.geolocation) {
+        setErrorMessage('Location access is required');
         setStatus('error');
+        return;
       }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          // Mark attendance using Next.js API
+          const res = await fetch(`/api/attendance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${studentToken}`
+            },
+            body: JSON.stringify({ 
+              sessionId, 
+              token,
+              studentName: user?.name,
+              rollNumber: user?.rollNumber,
+              latitude,
+              longitude
+            })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            setScanResult({
+              courseCode: data.courseCode || 'Verified',
+              timestamp: new Date().toLocaleTimeString()
+            });
+            setStatus('success');
+            triggerConfetti();
+            onScan(scannedUrl);
+          } else {
+            setErrorMessage(data.error || data.message || 'Could not mark attendance');
+            setStatus('error');
+          }
+        } catch (err) {
+          setErrorMessage('Connection error');
+          setStatus('error');
+        }
+      }, (err) => {
+        setErrorMessage('Location access denied');
+        setStatus('error');
+      });
     } catch (err: any) {
       setErrorMessage(err.message || 'Invalid QR Code');
       setStatus('error');

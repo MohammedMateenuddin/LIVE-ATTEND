@@ -30,7 +30,7 @@ export default function ProfessorLoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/professor/login`, {
+      const res = await fetch(`/api/auth/professor/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password: password.trim() }),
@@ -94,7 +94,7 @@ export default function ProfessorLoginPage() {
                     alt="HKBK Logo" 
                     width={80} 
                     height={80} 
-                    className="w-full h-full object-cover rounded-full" 
+                    className="w-full h-full object-cover rounded-full aspect-square" 
                   />
               </div>
               <h1 className="text-3xl font-black mb-1 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Welcome Back</h1>

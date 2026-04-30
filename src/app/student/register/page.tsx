@@ -29,7 +29,7 @@ export default function StudentRegisterPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/student/register`, {
+      const res = await fetch(`/api/auth/student/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email: email.trim(), rollNumber: rollNumber.trim(), password: password.trim() }),

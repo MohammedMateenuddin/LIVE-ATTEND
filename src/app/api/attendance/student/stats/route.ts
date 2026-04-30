@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: Request) {
     try {
+        const user = verifyToken(request);
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { searchParams } = new URL(request.url);
-        const rollNumber = searchParams.get('rollNumber');
+        const rollNumber = searchParams.get('rollNumber') || user.rollNumber;
 
         if (!rollNumber) {
             return NextResponse.json({ percentage: 0, attended: 0, total: 0 });

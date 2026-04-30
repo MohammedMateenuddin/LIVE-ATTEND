@@ -11,7 +11,7 @@ import { Suspense } from 'react';
 function StudentScanRedirectContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { studentToken, loading: authLoading } = useAuth();
+  const { user, studentToken, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -46,28 +46,47 @@ function StudentScanRedirectContent() {
   }, [mounted, authLoading, studentToken, searchParams, router]);
 
   const markDirectly = async (sessionId: string, token: string) => {
-    try {
-      const res = await fetch(`/api/attendance`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${studentToken}`
-        },
-        body: JSON.stringify({ sessionId, token, studentName: user?.name, rollNumber: user?.rollNumber })
-      });
+    if (!navigator.geolocation) {
+      toast.error('Location access is required');
+      router.push('/student');
+      return;
+    }
 
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Attendance Marked Successfully!");
-        router.push('/student');
-      } else {
-        toast.error(data.message || 'Verification failed');
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const res = await fetch(`/api/attendance`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${studentToken}`
+          },
+          body: JSON.stringify({ 
+            sessionId, 
+            token, 
+            studentName: user?.name, 
+            rollNumber: user?.rollNumber,
+            latitude,
+            longitude
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          toast.success("Attendance Marked Successfully!");
+          router.push('/student');
+        } else {
+          toast.error(data.error || data.message || 'Verification failed');
+          router.push('/student');
+        }
+      } catch (err) {
+        toast.error('Connection error');
         router.push('/student');
       }
-    } catch (err) {
-      toast.error('Connection error');
+    }, (err) => {
+      toast.error('Location access denied. Cannot mark attendance.');
       router.push('/student');
-    }
+    });
   };
 
   return (

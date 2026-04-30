@@ -1,14 +1,24 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getDistance } from 'geolib';
+import { verifyToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
     try {
+        const user = verifyToken(request);
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await request.json();
-        const { sessionId, studentName, rollNumber, latitude, longitude, deviceFingerprint } = body;
+        const { sessionId, latitude, longitude, deviceFingerprint } = body;
+        
+        // Use identity from the verified token to prevent spoofing
+        const studentName = user.name;
+        const rollNumber = user.rollNumber;
 
         // 1. Check if session exists and is active
-        const session = await prisma.session.findUnique({
+        const session = await (prisma.session as any).findUnique({
             where: { id: sessionId },
         });
 
@@ -49,13 +59,13 @@ export async function POST(request: Request) {
         }
 
         // 3. Check for duplicate attendance (inside the embedded array)
-        const alreadyMarked = session.attendees.some((a: any) => a.rollNumber === rollNumber);
+        const alreadyMarked = (session.attendees as any[]).some((a: any) => a.rollNumber === rollNumber);
         if (alreadyMarked) {
             return NextResponse.json({ error: 'Attendance already marked for this roll number' }, { status: 400 });
         }
 
         // 4. Update Session document by pushing to attendees array
-        const updatedSession = await prisma.session.update({
+        const updatedSession = await (prisma.session as any).update({
             where: { id: sessionId },
             data: {
                 attendees: {
