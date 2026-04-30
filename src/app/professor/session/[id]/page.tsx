@@ -63,14 +63,26 @@ export default function SessionQRPage() {
   }, [sessionId]);
 
   useEffect(() => {
-    // Single static token generation per session
+    if (!sessionId) return;
+    
+    // Initial token
     setToken(generateToken());
-  }, [sessionId]);
+    setCountdown(5);
 
-  // Timer removed per user request for static QR workflow
-  useEffect(() => {
-    setCountdown(0);
-  }, [token]);
+    const qrInterval = setInterval(() => {
+      setToken(generateToken());
+      setCountdown(5);
+    }, 5000);
+
+    const countdownInterval = setInterval(() => {
+      setCountdown(prev => (prev <= 1 ? 5 : prev - 1));
+    }, 1000);
+
+    return () => {
+      clearInterval(qrInterval);
+      clearInterval(countdownInterval);
+    };
+  }, [sessionId]);
 
   const attendanceUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}/student/scan?sessionId=${sessionId}&t=${token}`
@@ -269,7 +281,13 @@ export default function SessionQRPage() {
                         {/* THE STANDARD QR SCANNER CORE */}
                         <div className="relative p-3.5 bg-white rounded-2xl shadow-lg flex items-center justify-center">
                             <AnimatePresence mode="wait">
-                                <motion.div key={token} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
+                                <motion.div 
+                                    key={token} 
+                                    initial={{ opacity: 0, scale: 0.95 }} 
+                                    animate={{ opacity: 1, scale: 1 }} 
+                                    exit={{ opacity: 0, scale: 1.05 }} 
+                                    transition={{ duration: 0.2 }}
+                                >
                                     <QRCodeCanvas 
                                         value={attendanceUrl} 
                                         size={260} 
@@ -289,7 +307,26 @@ export default function SessionQRPage() {
                             </AnimatePresence>
                         </div>
 
-
+                        {/* REFRESH INDICATOR */}
+                        <div className="mt-4 w-full max-w-[260px] flex flex-col items-center">
+                            <div className="flex justify-between w-full mb-1">
+                                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
+                                    <FaSyncAlt className="animate-spin-slow text-emerald-400" /> Auto-Refreshing
+                                </span>
+                                <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">
+                                    {countdown}s
+                                </span>
+                            </div>
+                            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                                <motion.div 
+                                    key={token}
+                                    initial={{ width: "100%" }}
+                                    animate={{ width: "0%" }}
+                                    transition={{ duration: 5, ease: "linear" }}
+                                    className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2.5">

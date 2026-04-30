@@ -65,11 +65,11 @@ export default function StudentDashboard() {
         return;
       }
 
-      // Validate token age (< 60s) - Increased from 6s for better UX
+      // Validate token age (< 10s) - Tightened for security with 5s refresh
       const tokenTimestamp = parseInt(token.split('-')[0]);
       const age = Date.now() - tokenTimestamp;
-      if (isNaN(tokenTimestamp) || age > 60000) {
-        toast.error('QR code expired — ask professor to refresh');
+      if (isNaN(tokenTimestamp) || age > 10000) {
+        toast.error('QR code expired — please scan the fresh code');
         return;
       }
 

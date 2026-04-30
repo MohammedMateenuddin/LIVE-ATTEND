@@ -11,7 +11,14 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { sessionId, latitude, longitude, deviceFingerprint } = body;
+        const { sessionId, token, latitude, longitude, deviceFingerprint } = body;
+        
+        // 0. Verify QR token age (Server-side safety)
+        if (!token) return NextResponse.json({ error: 'Missing security token' }, { status: 400 });
+        const tokenTimestamp = parseInt(token.split('-')[0]);
+        if (isNaN(tokenTimestamp) || (Date.now() - tokenTimestamp) > 15000) { // 15s grace period for server lag
+            return NextResponse.json({ error: 'QR code expired. Please scan again.' }, { status: 400 });
+        }
         
         // Use identity from the verified token to prevent spoofing
         const studentName = user.name;
