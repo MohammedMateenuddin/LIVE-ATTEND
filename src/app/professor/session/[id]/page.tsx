@@ -33,7 +33,7 @@ export default function SessionQRPage() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/sessions/${sessionId}`);
+        const res = await fetch(`/api/session/${sessionId}`);
         if (res.ok) {
           const data = await res.json();
           setSessionData(data);
@@ -50,10 +50,10 @@ export default function SessionQRPage() {
   useEffect(() => {
     const pollAttendance = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/sessions/${sessionId}/attendance`);
+        const res = await fetch(`/api/session/${sessionId}`);
         if (res.ok) {
-          const attendees = await res.json();
-          setPresentCount(attendees.length);
+          const data = await res.json();
+          setPresentCount(data.attendees?.length || 0);
         }
       } catch (err) {
         console.error('Polling error:', err);
@@ -92,9 +92,10 @@ export default function SessionQRPage() {
       const jsPDF = jsPDFMod.default;
       const autoTable = autoTableMod.default;
       
-      const res = await fetch(`http://localhost:5000/api/sessions/${sessionId}/attendance`);
+      const res = await fetch(`/api/session/${sessionId}`);
       if (!res.ok) throw new Error('Failed to fetch attendance data');
-      const attendees = await res.json();
+      const data = await res.json();
+      const attendees = data.attendees || [];
 
       const doc = new jsPDF();
       const dateStr = new Date().toLocaleDateString();
@@ -155,9 +156,10 @@ export default function SessionQRPage() {
   const downloadCSV = async () => {
     const toastId = toast.loading('Generating Excel Data...');
     try {
-      const res = await fetch(`http://localhost:5000/api/sessions/${sessionId}/attendance`);
+      const res = await fetch(`/api/session/${sessionId}`);
       if (!res.ok) throw new Error('Failed to fetch data');
-      const attendees = await res.json();
+      const data = await res.json();
+      const attendees = data.attendees || [];
 
       const headers = ['#', 'Student Name', 'Roll Number', 'Status', 'Verified At', 'Subject'];
       const rows = attendees.map((s: any, i: number) => [
@@ -191,12 +193,13 @@ export default function SessionQRPage() {
 
   const endSession = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/sessions/${sessionId}/end`, {
-        method: 'POST',
+      const res = await fetch(`/api/session/${sessionId}`, {
+        method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${professorToken}` 
-        }
+        },
+        body: JSON.stringify({ isActive: false })
       });
       if (res.ok) {
         toast.success('Session Ended');
@@ -226,7 +229,10 @@ export default function SessionQRPage() {
       <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col h-full max-h-[99vh] justify-between py-1">
         <div className="flex justify-between items-center px-2">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col">
-                <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-none">Terminal</h1>
+                <div className="flex items-center gap-3">
+                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-8 h-8 object-contain" />
+                    <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-none">Terminal</h1>
+                </div>
                 <div className="flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <p className="text-white/60 text-[7px] font-black tracking-[0.3em] uppercase">Active</p>

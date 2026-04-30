@@ -47,13 +47,13 @@ function StudentScanRedirectContent() {
 
   const markDirectly = async (sessionId: string, token: string) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/mark`, {
+      const res = await fetch(`/api/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${studentToken}`
         },
-        body: JSON.stringify({ sessionId, token })
+        body: JSON.stringify({ sessionId, token, studentName: user?.name, rollNumber: user?.rollNumber })
       });
 
       const data = await res.json();

@@ -57,7 +57,7 @@ export default function ProfessorDashboard() {
                 const { latitude, longitude } = position.coords;
                 
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/sessions/create`, {
+                    const res = await fetch(`/api/session`, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -120,9 +120,12 @@ export default function ProfessorDashboard() {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex flex-col items-center md:items-start"
                     >
-                        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">
-                            Dashboard
-                        </h1>
+                        <div className="flex items-center gap-4">
+                            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+                            <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">
+                                Dashboard
+                            </h1>
+                        </div>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
                             <p className="text-white/80 text-[10px] font-black tracking-[0.5em] uppercase drop-shadow-md">Faculty Terminal</p>

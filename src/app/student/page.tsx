@@ -36,10 +36,10 @@ export default function StudentDashboard() {
     try {
       setLoadingData(true);
       const [statsRes, historyRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/stats`, {
+        fetch(`/api/attendance/student/stats?rollNumber=${user?.rollNumber}`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/history?limit=5`, {
+        fetch(`/api/attendance/student/history?rollNumber=${user?.rollNumber}&limit=5`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         })
       ]);
@@ -72,13 +72,13 @@ export default function StudentDashboard() {
         return;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/mark`, {
+      const res = await fetch(`/api/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${studentToken}`
         },
-        body: JSON.stringify({ sessionId, token })
+        body: JSON.stringify({ sessionId, token, studentName: user?.name, rollNumber: user?.rollNumber })
       });
 
       const data = await res.json();
@@ -136,9 +136,12 @@ export default function StudentDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col items-center md:items-start"
             >
-                <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">
-                    Student Dashboard
-                </h1>
+                <div className="flex items-center gap-4">
+                    <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">
+                        Student Dashboard
+                    </h1>
+                </div>
                 <div className="flex items-center gap-2 mt-1">
                     <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
                     <p className="text-white/80 text-[10px] font-black tracking-[0.5em] uppercase drop-shadow-md">Student Terminal</p>

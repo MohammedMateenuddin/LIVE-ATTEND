@@ -33,7 +33,7 @@ export default function ProfessorHistory() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/sessions/professor/history`, {
+      const res = await fetch(`/api/session/history`, {
         headers: { 'Authorization': `Bearer ${professorToken}` }
       });
       if (res.ok) {
@@ -181,9 +181,12 @@ export default function ProfessorHistory() {
             <Link href="/professor" className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest mb-4 transition-colors">
               <FaArrowLeft /> Back to Dashboard
             </Link>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-              Session History
-            </h1>
+            <div className="flex items-center gap-4">
+              <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                Session History
+              </h1>
+            </div>
           </div>
           
           <div className="relative w-full md:w-64">

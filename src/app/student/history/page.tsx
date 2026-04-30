@@ -35,10 +35,10 @@ export default function StudentHistory() {
     try {
       setLoading(true);
       const [historyRes, statsRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/history`, {
+        fetch(`/api/attendance/student/history?rollNumber=${user?.rollNumber}`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/attendance/student/stats`, {
+        fetch(`/api/attendance/student/stats?rollNumber=${user?.rollNumber}`, {
           headers: { 'Authorization': `Bearer ${studentToken}` }
         })
       ]);
@@ -74,9 +74,12 @@ export default function StudentHistory() {
             <Link href="/student" className="text-white/40 hover:text-cyan-400 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest mb-4 transition-colors">
               <FaArrowLeft /> Back to Dashboard
             </Link>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500">
-              Attendance Archive
-            </h1>
+            <div className="flex items-center gap-4">
+              <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-12 h-12 object-contain" />
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500">
+                Attendance Archive
+              </h1>
+            </div>
           </div>
           
           <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">

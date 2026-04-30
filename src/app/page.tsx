@@ -48,10 +48,13 @@ export default function Home() {
         className="z-10 w-full flex flex-col items-center px-4"
       >
         {/* Hero Title Section - MASSIVE */}
-        <motion.div variants={itemVariants} className="text-center mb-4 relative w-full">
-          <h1 className="text-[12vw] md:text-[10rem] font-black tracking-[-0.05em] leading-[0.8] text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-            Live Attend
-          </h1>
+        <motion.div variants={itemVariants} className="text-center mb-4 relative w-full flex flex-col items-center">
+          <div className="flex items-center justify-center gap-4 md:gap-6 mb-2">
+            <img src="/hkbk-logo.png" alt="HKBK Logo" className="w-16 md:w-28 h-auto drop-shadow-2xl animate-pulse" />
+            <h1 className="text-[12vw] md:text-[10rem] font-black tracking-[-0.05em] leading-[0.8] text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+              Live Attend
+            </h1>
+          </div>
           <p className="mt-4 text-white/90 text-[10px] md:text-xs font-bold tracking-[1em] uppercase pl-[1em] drop-shadow-lg">
             Precision Tracking
           </p>
